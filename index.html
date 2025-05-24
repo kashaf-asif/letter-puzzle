@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>4 Days Left – Love Letter Puzzle</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #fbc2eb, #a6c1ee);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .piece-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .piece, .dropzone {
+      width: 250px;
+      height: 80px;
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      user-select: none;
+    }
+
+    .piece {
+      background-color: #dff9fb;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .dropzone {
+      background-color: #f1f2f6;
+      border: 2px dashed #ccc;
+    }
+
+    .message {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>💌 4 Days Left – Complete the Love Letter</h2>
+  <p>Drag and drop the sentences in the correct order 💖</p>
+
+  <div class="piece-container" id="pieces">
+    <div class="piece" draggable="true" id="p1">Every laugh, every tear, every dream — I cherish it all.</div>
+    <div class="piece" draggable="true" id="p2">And I can’t wait to begin forever with you. 💍</div>
+    <div class="piece" draggable="true" id="p3">To the one who holds my heart,</div>
+    <div class="piece" draggable="true" id="p4">Each moment with you has been magic,</div>
+  </div>
+
+  <div class="piece-container" id="dropzones">
+    <div class="dropzone" data-order="0"></div>
+    <div class="dropzone" data-order="1"></div>
+    <div class="dropzone" data-order="2"></div>
+    <div class="dropzone" data-order="3"></div>
+  </div>
+
+  <div class="message" id="result"></div>
+</div>
+
+<script>
+  const pieces = document.querySelectorAll('.piece');
+  const dropzones = document.querySelectorAll('.dropzone');
+  let draggedPiece = null;
+
+  // Mouse drag events
+  pieces.forEach(piece => {
+    piece.addEventListener('dragstart', () => {
+      draggedPiece = piece;
+    });
+  });
+
+  // Touch support
+  pieces.forEach(piece => {
+    piece.addEventListener('touchstart', (e) => {
+      draggedPiece = piece;
+      piece.style.opacity = 0.5;
+    });
+
+    piece.addEventListener('touchend', (e) => {
+      piece.style.opacity = 1;
+    });
+  });
+
+  dropzones.forEach(zone => {
+    // For desktop
+    zone.addEventListener('dragover', (e) => e.preventDefault());
+    zone.addEventListener('drop', () => {
+      if (!zone.hasChildNodes()) {
+        zone.appendChild(draggedPiece);
+        checkWin();
+      }
+    });
+
+    // For mobile
+    zone.addEventListener('touchend', (e) => {
+      if (!zone.hasChildNodes()) {
+        zone.appendChild(draggedPiece);
+        checkWin();
+      }
+    });
+  });
+
+  const correctOrder = ["p3", "p4", "p1", "p2"];
+
+  function checkWin() {
+    const currentOrder = Array.from(dropzones).map(z => z.firstChild?.id || "");
+    if (JSON.stringify(currentOrder) === JSON.stringify(correctOrder)) {
+      document.getElementById("result").innerHTML = "🎉 Only 4 Days Left! 🎉 Till you both start your forever. Wishing you a lifetime of love and laughter! 💍❤️";
+    }
+  }
+</script>
+</body>
+</html>
